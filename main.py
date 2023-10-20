@@ -11,7 +11,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 check_interval = 60 * 60
 
 
-def fetch_fligth(departure, destinations, date_start, date_end):
+def fetch_flight(departure, destinations, date_start, date_end):
     url = f"https://biletyczarterowe.r.pl/api/destynacja/wyszukaj-wylot?iataSkad%5B%5D={departure}&iataDokad%5B%5D={destinations}&dataUrodzenia%5B%5D=1989-10-30&dataMin={date_start}&dataMax={date_end}&oneWay=true"
 
     while True:
@@ -35,7 +35,7 @@ def fetch_fligth(departure, destinations, date_start, date_end):
                         session.add(flight_check)
                         session.commit()
 
-                        matching_flight_found(price, data_flight)
+                        send_notification(price, data_flight)
 
             else:
                 logging.error(f"Error fetching data with status code: {response.status_code}")
@@ -46,10 +46,9 @@ def fetch_fligth(departure, destinations, date_start, date_end):
         time.sleep(check_interval)
 
 
-def send_message(price, data_fight):
+def send_message(msg):
     chat_id = get_telegram_chat_id()
-    msg = f"Yuupi! Got it! {data_fight} for {price}"
-    url = f"https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id={chat_id}&text={msg}"
+    url = f"https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id={chat_id}&text={msg}&parse_mode=Markdown"
 
     response = requests.get(url)
     response_data = response.json()
@@ -77,15 +76,24 @@ def get_telegram_chat_id():
         return None
 
 
-def display_alert(data, price):
-    apple_script_command = f'display notification "The price dropped to {price} to {data}!!!" with title "The ticket price has dropped!"'
+def display_alert(message, tittle):
+    apple_script_command = f'display notification {message} with title {tittle}'
     subprocess.run(["osascript", "-e", apple_script_command])
 
 
-def matching_flight_found(price, data_flight):
-    send_message(price, data_flight)
-    display_alert(price, data_flight)
+def send_notification(price, data_flight):
+    msg_occasion_price = f"Yuuuupi! The price dropped to **{price}** to {data_flight}!!!"
+    msg_basic_price = f"**{price}**, {data_flight}!!!"
+    tittle_occasion_price = "The ticket price has dropped!"
+    tittle_basic_price = "Ticket price"
+
+    if not price < 1500:
+        display_alert(msg_basic_price, tittle_basic_price)
+        send_message(msg_basic_price)
+    else:
+        display_alert(msg_occasion_price, tittle_occasion_price)
+        send_message(msg_occasion_price)
 
 
 if __name__ == "__main__":
-    logging.info(fetch_fligth("PQC", "KTW,WAW", "2023-11-06", "2023-12-30"))
+    logging.info(fetch_flight("PQC", "KTW,WAW", "2023-11-06", "2023-12-30"))
