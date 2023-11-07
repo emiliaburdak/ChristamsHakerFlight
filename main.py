@@ -48,7 +48,7 @@ def fetch_flight(departure, destinations, date_start, date_end):
 
 def send_message(msg):
     chat_id = get_telegram_chat_id()
-    url = f"https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id={chat_id}&text={msg}&parse_mode=Markdown"
+    url = f"https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id={chat_id}&text={msg}"
 
     response = requests.get(url)
     response_data = response.json()
@@ -77,13 +77,13 @@ def get_telegram_chat_id():
 
 
 def display_alert(message, tittle):
-    apple_script_command = f'display notification {message} with title {tittle}'
+    apple_script_command = f'display notification "{message}" with title "{tittle}"'
     subprocess.run(["osascript", "-e", apple_script_command])
 
 
 def send_notification(price, data_flight):
-    msg_occasion_price = f"Yuuuupi! The price dropped to **{price}** to {data_flight}!!!"
-    msg_basic_price = f"**{price}**, {data_flight}!!!"
+    msg_occasion_price = f"Yuuuupi! The price dropped to {price} to {data_flight}!"
+    msg_basic_price = f"{price}, {data_flight}"
     tittle_occasion_price = "The ticket price has dropped!"
     tittle_basic_price = "Ticket price"
 
