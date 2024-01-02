@@ -1,5 +1,5 @@
 # ChristamsHakerFlight
-Automated tracker for low-cost holiday flights from Asia to Poland, providing instant alerts via Telegram and MacOS.
+Automated tracker for low-cost holiday flights, providing instant alerts via Telegram and MacOS.
 
 ## Overview
 ChristmasHackerFlight is a handy application that tracks unusually cheap charter flights from Rainbow travel agency, suitable for travelers who want to customize their search for the best deals according to specific routes and dates. It can be set run in the background and provides prompt notifications through Telegram and desktop alerts , ensuring you never miss out on a great deal.
