@@ -1,4 +1,4 @@
-# ChristamsHakerFlight
+# ChristamsHackerFlight
 Automated tracker for low-cost holiday flights, providing instant alerts via Telegram and MacOS.
 
 ## Overview
